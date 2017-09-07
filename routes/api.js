@@ -7,8 +7,9 @@ router.get('/v1/keys', function(req, res) {
 })
 
 router.get('/v1/key/:id', function(req, res) {
-	// TODO
-    res.send(keySerivce.getAllKeyById());
+    var id = req.params.id;
+    console.log("getKey");
+    res.send(keySerivce.getKeyById(id));
 })
 
 router.post('/v1/key/:id', function(req, res) {
