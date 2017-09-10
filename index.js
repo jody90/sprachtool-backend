@@ -1,118 +1,35 @@
 global.__base = __dirname;
 
 const express = require("express");
-const routes = require("./routes/api");
+const fs = require("fs");
 const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
-const GLOBAL = require('./globals');
 const bodyParser = require('body-parser');
 
-// console.log(GLOBAL.url);
+const routes = require("./routes/api");
+const GLOBAL = require('./globals');
+const keySerivce = require(__base + "/services/KeyService");
+const versionSerivce = require(__base + "/services/VersionService");
 
-// Use connect method to connect to the server
+var filePath = "Temp/";
 
-
-// var insertDocuments = function (db, callback) {
-//     // Get the documents collection
-//     var collection = db.collection('documents');
-//     // Insert some documents
-//     collection.insertMany([
-//         { a: 1 }, { a: 2 }, { a: 3 }
-//     ], function (err, result) {
-//         assert.equal(err, null);
-//         assert.equal(3, result.result.n);
-//         assert.equal(3, result.ops.length);
-//         console.log("Inserted 3 documents into the collection");
-//         callback(result);
-//     });
-// }
-
-// mongo.connect(GLOBAL.url, function (err, db) {
-//     assert.equal(null, err);
-//
-//     var collection = db.collection('keys');
-//
-//     insertDocuments(db, function() {
-//         db.close();
-//     })
-// });
-
-// mongo.connect(GLOBAL.url, function (err, db) {
-//     assert.equal(null, err);
-//     var collection = db.collection('keys');
-//
-//     // collection.find({key: keyId}).toArray(function (err, docs) {
-//     //     assert.equal(err, null);
-//     //     console.log(docs);
-//     //
-//     //     collection.save({_id: docs[0]._id}, data, function (err, result) {
-//     //         assert.equal(err, null);
-//     //         console.log("Updated 1 documents into the collection");
-//     //         callback(result);
-//     //         db.close();
-//     //     });
-//     // });
-//
-//
-//     data = {
-//         key: 'll',
-//         translations: [ { language: 'EN', value: 'bbb' } ],
-//         createdAt: 1504904616174,
-//         modifiedAt: 1505029483434
-//     }
-//
-//     console.log(data);
-//
-//     keyId = "lllll";
-//
-//     collection.replaceOne({key: keyId}, data,
-//     // {multi: true},
-//     function (err, result) {
-//         assert.equal(err, null);
-//         console.log("Updated 1 documents into the collection");
-//         console.log(result.result);
-//     });
-// });
-
-var findDocuments = function (db, callback) {
-    // Get the documents collection
-    var collection = db.collection('keys');
-    // Find some documents
-    collection.find({}).toArray(function (err, docs) {
-        assert.equal(err, null);
-        console.log("Found the following records");
-        console.log(docs)
-        callback(docs);
-    });
+// Create Temp folder if it doesnt exists
+if (!fs.existsSync(filePath)){
+    fs.mkdirSync(filePath);
+}
+if (!fs.existsSync("Temp/test")){
+    fs.mkdirSync("Temp/test");
+}
+if (!fs.existsSync("Temp/live")){
+    fs.mkdirSync("Temp/live");
 }
 
-var insertDocuments = function (db, callback) {
+// Make key unique
+mongo.connect(GLOBAL.url, function (err, db) {
+    assert.equal(null, err);
     var collection = db.collection('keys');
-    collection.insertMany([
-        {
-            key: "jody.test",
-            translations: [{
-                language: "DE",
-                value: "jody test DE"
-            }],
-            createdAt: new Date().getTime(),
-            modifiedAt: new Date().getTime()
-        },
-        {
-            key: "jody.hey",
-            translations: [{
-                language: "DE",
-                value: "jody hey DE"
-            }],
-            createdAt: new Date().getTime(),
-            modifiedAt: new Date().getTime()
-        }
-    ], function (err, result) {
-        assert.equal(err, null);
-        console.log("Inserted 2 documents into the collection");
-        callback(result);
-    });
-}
+    collection.ensureIndex({key: 1}, {unique: true});
+});
 
 //CORS middleware
 var allowCrossDomain = function (req, res, next) {

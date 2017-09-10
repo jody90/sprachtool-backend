@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const keySerivce = require(__base + "/services/KeyService");
+const versionSerivce = require(__base + "/services/VersionService");
 
 router.get('/v1/keys', function(req, res) {
     console.log("getAllKeys")
@@ -53,6 +54,32 @@ router.delete('/v1/key/:id', function(req, res) {
             res.status(500).send();
         }
     });
+})
+
+router.get('/v1/versions', function(req, res) {
+    console.log("getAllVersions")
+    versionSerivce.getAllVersions(function(data) {
+        res.send(data);
+    });
+})
+
+router.post('/v1/version', function(req, res) {
+    console.log("newVersion")
+    keySerivce.getAllKeys(function(keys) {
+        versionSerivce.addVersion(req.body, keys, function(result) {
+            res.status(200).send();
+        })
+    })
+})
+
+router.post('/v1/version/publish', function(req, res) {
+    console.log("publish Version")
+    versionSerivce.publishVersion(req.body.versionId, req.body.language, req.body.destination);
+    // keySerivce.getVersionById(function(keys) {
+        // versionSerivce.addVersion(req.body, keys, function(result) {
+        //     res.status(200).send();
+        // })
+    // })
 })
 
 router.get('/v1/languages', function(req, res) {

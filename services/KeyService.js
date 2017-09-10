@@ -1,4 +1,3 @@
-const KeyModel = require("../models/key.model");
 const GLOBAL = require(__base + "/globals");
 const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
