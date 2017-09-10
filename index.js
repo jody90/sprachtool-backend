@@ -37,6 +37,43 @@ const bodyParser = require('body-parser');
 //     })
 // });
 
+// mongo.connect(GLOBAL.url, function (err, db) {
+//     assert.equal(null, err);
+//     var collection = db.collection('keys');
+//
+//     // collection.find({key: keyId}).toArray(function (err, docs) {
+//     //     assert.equal(err, null);
+//     //     console.log(docs);
+//     //
+//     //     collection.save({_id: docs[0]._id}, data, function (err, result) {
+//     //         assert.equal(err, null);
+//     //         console.log("Updated 1 documents into the collection");
+//     //         callback(result);
+//     //         db.close();
+//     //     });
+//     // });
+//
+//
+//     data = {
+//         key: 'll',
+//         translations: [ { language: 'EN', value: 'bbb' } ],
+//         createdAt: 1504904616174,
+//         modifiedAt: 1505029483434
+//     }
+//
+//     console.log(data);
+//
+//     keyId = "lllll";
+//
+//     collection.replaceOne({key: keyId}, data,
+//     // {multi: true},
+//     function (err, result) {
+//         assert.equal(err, null);
+//         console.log("Updated 1 documents into the collection");
+//         console.log(result.result);
+//     });
+// });
+
 var findDocuments = function (db, callback) {
     // Get the documents collection
     var collection = db.collection('keys');
@@ -81,7 +118,7 @@ var insertDocuments = function (db, callback) {
 var allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'appid, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
     next();
 }

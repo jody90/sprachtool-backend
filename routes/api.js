@@ -3,6 +3,7 @@ const router = express.Router();
 const keySerivce = require(__base + "/services/KeyService");
 
 router.get('/v1/keys', function(req, res) {
+    console.log("getAllKeys")
     keySerivce.getAllKeys(function(data) {
         res.send(data);
     });
@@ -10,6 +11,7 @@ router.get('/v1/keys', function(req, res) {
 
 router.get('/v1/key/:id', function(req, res) {
     var id = req.params.id;
+
     keySerivce.getKeyById(id, function(data) {
         if (data.length > 0) {
             res.status(200).send(data);
@@ -22,23 +24,30 @@ router.get('/v1/key/:id', function(req, res) {
 
 router.post('/v1/key/:id', function(req, res) {
     keySerivce.insertKey(req.body, function(data) {
-        console.log(data);
+        console.log(data.result);
     });
-    // console.log(req.body);
-    // var collection = db.collection('keys');
-    // collection.insert(req.body, function (err, result) {
-    //     assert.equal(err, null);
-    //     console.log("Inserted 1 documents into the collection");
-    //     callback(result);
-    // });
 })
 
 router.put('/v1/key/:id', function(req, res) {
-    console.log("put key");
+    keySerivce.updateKey(req.params.id, req.body, function(data) {
+        if (data.result.nModified == 1) {
+            res.status(200).send();
+        }
+        else {
+            res.status(500).send();
+        }
+    });
 })
 
 router.delete('/v1/key/:id', function(req, res) {
-    console.log("delete key");
+    keySerivce.deleteKey(req.params.id, function(data) {
+        if (data.result.n == 1) {
+            res.status(200).send();
+        }
+        else {
+            res.status(500).send();
+        }
+    });
 })
 
 router.get('/v1/languages', function(req, res) {
