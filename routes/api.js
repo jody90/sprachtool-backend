@@ -24,7 +24,12 @@ router.get('/v1/key/:id', function(req, res) {
 
 router.post('/v1/key/:id', function(req, res) {
     keySerivce.insertKey(req.body, function(data) {
-        console.log(data.result);
+        if (data.result.n == 1) {
+            res.status(200).send();
+        }
+        else {
+            res.status(500).send();
+        }
     });
 })
 
