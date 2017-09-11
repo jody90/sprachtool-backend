@@ -13,7 +13,10 @@ const VersionService = {
             var version = {
                 title: data.title,
                 description: data.description,
-                environment: null,
+                environment: {
+                    test: [],
+                    live: [],
+                },
                 keys: keys,
                 createdAt: new Date().getTime()
             }
@@ -25,34 +28,6 @@ const VersionService = {
             });
 
         });
-    },
-    createFile: function(keys, language, destination, versionId) {
-        var that = this;
-        this.getLocalizedKeys(keys, language, function(localizedKeys) {
-            var filePath = "Temp/" + destination + "/";
-
-            for (let lang in localizedKeys) {
-
-                var fileName = "base_" + lang + ".txt";
-                var file = filePath + fileName;
-                // var stream = fs.createWriteStream(file, {flags: 'w+', overwrite: true});
-
-                var text = "";
-
-                for (let key in localizedKeys[lang]) {
-                    text += key + " = " + localizedKeys[lang][key] + "\n";
-                }
-
-                fs.writeFileSync(file, text);
-
-                that.setCurrentEnvironment(versionId, destination, lang, function(result) {
-                    console.log(result);
-                })
-            }
-        });
-
-
-        // TODO upload File to Server
     },
     getLocalizedKeys: function(keys, language, callback) {
         var languages = language.split(",");
@@ -76,12 +51,45 @@ const VersionService = {
 
         callback(localizedKeys);
     },
-    publishVersion: function(versionId, language, destination) {
+    publishVersion: function(versionId, language, destination, callback) {
         var that = this;
         that.getVersionById(versionId, function(version) {
-            that.createFile(version[0].keys, language, destination, versionId);
+            that.createFile(version[0].keys, language, destination, versionId, function(data) {
+                if (data.publishState == "success") {
+                    return callback(data);
+                }
+            });
         })
+    },
+    createFile: function(keys, language, destination, versionId, callback) {
+        var that = this;
+        this.getLocalizedKeys(keys, language, function(localizedKeys) {
+            var filePath = "Temp/" + destination + "/";
+            var counter = 0;
 
+            for (let lang in localizedKeys) {
+
+                var fileName = "base_" + lang + ".properties";
+                var file = filePath + fileName;
+                // var stream = fs.createWriteStream(file, {flags: 'w+', overwrite: true});
+
+                var text = "";
+
+                for (let key in localizedKeys[lang]) {
+                    text += key + " = " + localizedKeys[lang][key] + "\n";
+                }
+
+                fs.writeFileSync(file, text);
+
+                // TODO upload File to Server after in success callback update on db
+                that.setCurrentEnvironment(versionId, destination, lang, function(result) {
+                    counter++;
+                    if (counter == Object.keys(localizedKeys).length) {
+                        return callback({publishState: "success"});
+                    }
+                })
+            }
+        });
     },
     getVersionById: function(versionId, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
@@ -118,41 +126,23 @@ const VersionService = {
             var collection = db.collection('versions');
 
             var envObject = {};
-            envObject[environment] = ["DE", "EN"];
+            envObject[environment] = [];
 
             var oId = new ObjectId(versionId);
 
             var query = {};
             query["environment." + environment] = language;
-            // query.environment[environment] = "DE";
 
-            // var query = "{environment." + environment + ":'DE'}";
-            // console.log(query);
-
-
-            // collection.find({query}).toArray(function (err, docs) {
-            //     assert.equal(err, null);
-            //     console.log(docs[0]);
-            //     // callback(docs);
-            //     db.close();
-            // });
-
-            query["environment." + environment] = "DE";
-
-            collection.update({}, {$pull: {query}}, function (err, docs) {
+            collection.update({}, {$pull: query}, {multi: true}, function (err, result) {
                 assert.equal(err, null);
-                console.log(docs[0]);
-                // callback(docs);
-                db.close();
+
+                collection.update({_id: oId}, {$addToSet: query}, function (err, docs) {
+                    assert.equal(err, null);
+                    callback(docs.result);
+                    db.close();
+                });
             });
 
-
-
-            // collection.update({_id: oId}, {$set: {environment: envObject}}, function (err, docs) {
-            //     assert.equal(err, null);
-            //     callback(docs.result);
-            //     db.close();
-            // });
         });
     }
 

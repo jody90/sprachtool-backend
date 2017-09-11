@@ -74,12 +74,15 @@ router.post('/v1/version', function(req, res) {
 
 router.post('/v1/version/publish', function(req, res) {
     console.log("publish Version")
-    versionSerivce.publishVersion(req.body.versionId, req.body.language, req.body.destination);
-    // keySerivce.getVersionById(function(keys) {
-        // versionSerivce.addVersion(req.body, keys, function(result) {
-        //     res.status(200).send();
-        // })
-    // })
+    versionSerivce.publishVersion(req.body.versionId, req.body.language, req.body.destination, function(data) {
+        if (data.publishState == "success") {
+            res.status(200).send();
+        }
+        else {
+            res.status(500).send();
+        }
+
+    });
 })
 
 router.get('/v1/languages', function(req, res) {
