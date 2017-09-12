@@ -1,4 +1,4 @@
-FROM node:boron
+FROM node:6
 
 # Create a directory where our app will be placed
 RUN mkdir -p /usr/src/app
