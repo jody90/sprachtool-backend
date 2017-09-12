@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const keySerivce = require(__base + "/services/KeyService");
 const versionSerivce = require(__base + "/services/VersionService");
+const languageSerivce = require(__base + "/services/LanguageService");
 
 router.get('/v1/keys', function(req, res) {
     console.log("getAllKeys")
@@ -81,12 +82,31 @@ router.post('/v1/version/publish', function(req, res) {
         else {
             res.status(500).send();
         }
-
     });
 })
 
 router.get('/v1/languages', function(req, res) {
-    console.log("get languages");
+    console.log("getAllLanguages");
+    languageSerivce.getAllLanguages(function(data) {
+        if (data) {
+            res.status(200).send(data);
+        }
+        else {
+            res.status(500).send();
+        }
+    })
+})
+
+router.post('/v1/language/:lang', function(req, res) {
+    console.log("add Language")
+    languageSerivce.insertLanguage({"language": req.params.lang}, function(data) {
+        if (data.result.ok == 1) {
+            res.status(200).send();
+        }
+        else {
+            res.status(500).send();
+        }
+    });
 })
 
 module.exports = router;
