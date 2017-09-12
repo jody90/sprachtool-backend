@@ -1,8 +1,9 @@
-const GLOBAL = require(__base + "/globals");
-const mongo = require('mongodb').MongoClient;
+const GLOBAL   = require(__base + "/globals");
+const mongo    = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const assert = require('assert');
-const fs = require("fs");
+const assert   = require('assert');
+const fs       = require("fs");
+const client   = require('scp2');
 
 const VersionService = {
     addVersion: function(data, keys, callback) {
@@ -81,11 +82,23 @@ const VersionService = {
 
                 fs.writeFileSync(file, text);
 
-                // TODO upload File to Server after in success callback update on db
-                that.setCurrentEnvironment(versionId, destination, lang, function(result) {
-                    counter++;
-                    if (counter == Object.keys(localizedKeys).length) {
-                        return callback({publishState: "success"});
+                client.scp(file, {
+                    host: GLOBAL.sshDestinations[destination].host,
+                    username: GLOBAL.sshDestinations[destination].username,
+                    privateKey: fs.readFileSync(GLOBAL.sshPrivateKeyPath),
+                    path: GLOBAL.sshDestinations[destination].path
+                }, function(err) {
+                    if (!err) {
+                        console.log("fertig");
+                        that.setCurrentEnvironment(versionId, destination, lang, function(result) {
+                            counter++;
+                            if (counter == Object.keys(localizedKeys).length) {
+                                return callback({publishState: "success"});
+                            }
+                        })
+                    }
+                    else {
+                        console.log("scp error: ", err);
                     }
                 })
             }
