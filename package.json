@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start:jody": "node index.js jody",
+    "start:codeninja": "node index.js codeninja",
+    "start:local": "node index.js local"
   },
   "keywords": [],
   "author": "",
