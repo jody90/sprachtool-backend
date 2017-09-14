@@ -7,6 +7,7 @@ switch (ARGS[0]) {
         var username = 'sortimo';
         var pathTest = '/home/sortimo/sprachtool-files/test';
         var pathLive = '/home/sortimo/sprachtool-files/live';
+        var mongoUrl = 'mongodb://mongodb:27017/myproject';
     break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
@@ -14,13 +15,14 @@ switch (ARGS[0]) {
         var username = 'sortimo';
         var pathTest = '/home/sortimo/sprachtool-files/test';
         var pathLive = '/home/sortimo/sprachtool-files/live';
+        var mongoUrl = 'mongodb://172.22.2.159:27017/myproject';
     break;
     default:
 
 }
 
 var Globals = {
-    url: 'mongodb://mongodb:27017/myproject',
+    url: mongoUrl,
     sshPrivateKeyPath: sshPrivateKeyPath,
     sshDestinations: {
         test: {
