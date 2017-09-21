@@ -30,12 +30,13 @@ const KeyService = {
         });
     },
     insertKey: function(data, callback) {
+        console.log(data);
+        var that = this;
         mongo.connect(GLOBAL.url, function (err, db) {
             assert.equal(null, err);
             var collection = db.collection('keys');
-            collection.insert(data, function (err, result) {
-                assert.equal(err, null);
-                console.log("Inserted 1 documents into the collection");
+            collection.update({key: data.key}, data, {upsert: true}, function (err, result) {
+                db.close();
                 callback(result);
             });
         });
@@ -48,6 +49,8 @@ const KeyService = {
             collection.replaceOne({key: keyId}, data, function (err, result) {
                 assert.equal(err, null);
                 console.log("Updated 1 documents into the collection");
+                db.close();
+
                 callback(result);
             });
         });
@@ -60,6 +63,7 @@ const KeyService = {
             collection.remove({key: keyId}, function (err, result) {
                 assert.equal(err, null);
                 console.log("Deleted 1 documents into the collection");
+                db.close();
                 callback(result);
             });
         });

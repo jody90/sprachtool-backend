@@ -11,6 +11,8 @@ const GLOBAL = require('./globals');
 const keySerivce = require(__base + "/services/KeyService");
 const versionSerivce = require(__base + "/services/VersionService");
 
+const importService = require(__base + "/services/ImportService");
+
 var filePath = "Temp/";
 
 // Create Temp folder if it doesnt exists

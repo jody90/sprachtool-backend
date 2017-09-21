@@ -14,8 +14,11 @@ router.get('/v1/keys', function(req, res) {
 router.get('/v1/key/:id', function(req, res) {
     var id = req.params.id;
 
+    // var startTime = new Date().getTime();
+
     keySerivce.getKeyById(id, function(data) {
         if (data.length > 0) {
+            // console.log(new Date().getTime() - startTime);
             res.status(200).send(data);
         }
         else {

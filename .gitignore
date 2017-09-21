@@ -1,3 +1,5 @@
 /node_modules
 /Temp
+/clean
+/dirty
 npm-debug.log

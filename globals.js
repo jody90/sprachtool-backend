@@ -3,7 +3,7 @@ const ARGS = process.argv.slice(2);
 switch (ARGS[0]) {
     case "codeninja" :
         var sshPrivateKeyPath = '/data/ssh/id_rsa'
-        var host = '172.22.2.158';
+        var host = '172.22.2.15';
         var username = 'sortimo';
         var pathTest = '/home/sortimo/sprachtool-files/test';
         var pathLive = '/home/sortimo/sprachtool-files/live';
@@ -11,10 +11,10 @@ switch (ARGS[0]) {
     break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
-        var host = '172.22.2.158';
-        var username = 'sortimo';
-        var pathTest = '/home/sortimo/sprachtool-files/test';
-        var pathLive = '/home/sortimo/sprachtool-files/live';
+        var host = '46.101.169.145';
+        var username = 'root';
+        var pathTest = '/var/www/html/test';
+        var pathLive = '/var/www/html/live';
         var mongoUrl = 'mongodb://172.22.2.159:27017/myproject';
     break;
     default:
