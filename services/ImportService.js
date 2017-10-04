@@ -2,6 +2,7 @@ const GLOBAL = require(__base + "/globals");
 const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
 const keySerivce = require(__base + "/services/KeyService");
+const fs = require("fs");
 
 const ImportService = {
     insertFromFile: function(filedata, counter, language) {
@@ -38,6 +39,20 @@ const ImportService = {
             }
         })
     },
+    readFile: function(filepath) {
+        fs.readFile(filepath, (err, data) => {
+            if (err) throw err;
+            var fileArray = data.toString().split("\n");
+            if (fileArray) {
+                for (let i in fileArray) {
+                    if (fileArray[i].trim() == "") {
+                        fileArray.splice(i, 1);
+                    }
+                }
+                this.addTranslation(fileArray, 0, "fr");
+            }
+        });
+    },
     addTranslation: function(filedata, counter, language) {
 
         var that = this;
@@ -61,25 +76,25 @@ const ImportService = {
             console.log(query);
 
             // collection.update({}, {$pull: { "language": "de" }}, {multi: true}, function (err, result) {
-                // assert.equal(err, null);
+            // assert.equal(err, null);
 
-                collection.update({key: key}, {$addToSet: query}, function (err, docs) {
-                    assert.equal(err, null);
-                    if (filedata.length > 1) {
-                        counter++;
-                        filedata.splice(0, 1);
-                        console.log("counter: ", counter);
-                        console.log("Inserted", query);
-                        db.close();
-                        setTimeout(function() {
-                            that.addTranslation(filedata, counter, language);
-                        }, 20);
-                    }
-                    else {
-                        console.log("fertig")
-                    }
-                });
+            collection.update({key: key}, {$addToSet: query}, function (err, docs) {
+                assert.equal(err, null);
+                if (filedata.length > 1) {
+                    counter++;
+                    filedata.splice(0, 1);
+                    console.log("counter: ", counter);
+                    console.log("Inserted", query);
+                    db.close();
+                    setTimeout(function() {
+                        that.addTranslation(filedata, counter, language);
+                    }, 20);
+                }
+                else {
+                    console.log("fertig")
+                }
             });
+        });
         // });
         //
         // keySerivce.insertKey(data, function() {

@@ -11,7 +11,7 @@ switch (ARGS[0]) {
     break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
-        var host = '46.101.169.145';
+        var host = '165.227.163.32';
         var username = 'root';
         var pathTest = '/var/www/html/test';
         var pathLive = '/var/www/html/live';
