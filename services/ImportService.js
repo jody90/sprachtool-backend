@@ -39,7 +39,7 @@ const ImportService = {
             }
         })
     },
-    readFile: function(filepath) {
+    processInsert: function(filepath, language) {
         fs.readFile(filepath, (err, data) => {
             if (err) throw err;
             var fileArray = data.toString().split("\n");
@@ -49,7 +49,7 @@ const ImportService = {
                         fileArray.splice(i, 1);
                     }
                 }
-                this.addTranslation(fileArray, 0, "fr");
+                this.addTranslation(fileArray, 0, language);
             }
         });
     },
@@ -78,7 +78,7 @@ const ImportService = {
             // collection.update({}, {$pull: { "language": "de" }}, {multi: true}, function (err, result) {
             // assert.equal(err, null);
 
-            collection.update({key: key}, {$addToSet: query}, function (err, docs) {
+            collection.update({key: key}, {$addToSet: query}, {upsert: true}, function (err, docs) {
                 assert.equal(err, null);
                 if (filedata.length > 1) {
                     counter++;

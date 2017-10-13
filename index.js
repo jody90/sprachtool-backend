@@ -26,7 +26,7 @@ if (!fs.existsSync("Temp/live")){
     fs.mkdirSync("Temp/live");
 }
 
-// importService.readFile("base_fr_clean.properties");
+// importService.processInsert("clean/base_en_IE.properties", "en_IE");
 
 // Make key unique
 mongo.connect(GLOBAL.url, function (err, db) {
