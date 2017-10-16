@@ -3,10 +3,10 @@ const ARGS = process.argv.slice(2);
 switch (ARGS[0]) {
     case "codeninja" :
         var sshPrivateKeyPath = '/data/ssh/id_rsa'
-        var host = '172.22.2.15';
+        var host = '10.255.48.21';
         var username = 'sortimo';
-        var pathTest = '/home/sortimo/sprachtool-files/test';
-        var pathLive = '/home/sortimo/sprachtool-files/live';
+        var pathTest = '/cache/sprachtool/test';
+        var pathLive = '/cache/sprachtool/live';
         var mongoUrl = 'mongodb://mongodb:27017/myproject';
     break;
     case "local" :
