@@ -125,7 +125,7 @@ const VersionService = {
 
             var collection = db.collection('versions');
 
-            collection.find({}).sort({_id: -1}).toArray(function (err, docs) {
+            collection.find({}, {keys: 0}).sort({_id: -1}).toArray(function (err, docs) {
                 assert.equal(err, null);
                 callback(docs);
                 db.close();
