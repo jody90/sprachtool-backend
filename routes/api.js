@@ -27,6 +27,24 @@ router.get('/v1/key/:id', function(req, res) {
     })
 })
 
+
+router.get('/v1/key/exist/:id', function(req, res) {
+    var id = req.params.id;
+
+    // var startTime = new Date().getTime();
+
+    keySerivce.getKeyById(id, function(data) {
+        if (data.length > 0) {
+            // console.log(new Date().getTime() - startTime);
+            res.status(200).send(true);
+        }
+        else {
+            res.status(200).send(false);
+        }
+    })
+})
+
+
 router.post('/v1/key/:id', function(req, res) {
     keySerivce.insertKey(req.body, function(data) {
         if (data.result.n == 1) {

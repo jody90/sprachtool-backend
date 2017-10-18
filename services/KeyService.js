@@ -1,4 +1,4 @@
-const GLOBAL = require(__base + "/globals");
+    const GLOBAL = require(__base + "/globals");
 const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
 
@@ -31,29 +31,51 @@ const KeyService = {
     },
     insertKey: function(data, callback) {
         console.log(data);
+        console.log("insert: ", data.key);
         var that = this;
-        mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
-            var collection = db.collection('keys');
-            collection.update({key: data.key}, data, {upsert: true}, function (err, result) {
-                db.close();
-                callback(result);
+
+        if (data.key != null) {
+            mongo.connect(GLOBAL.url, function (err, db) {
+                assert.equal(null, err);
+                var collection = db.collection('keys');
+                collection.update({key: data.key}, data, {upsert: true}, function (err, result) {
+                    db.close();
+                    callback(result);
+                });
             });
-        });
+        }
+        else {
+            var retrun = {
+                result: {
+                    n: 0
+                }
+            }
+            callback(retrun);
+        }
     },
     updateKey: function(keyId, data, callback) {
-        mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
-            var collection = db.collection('keys');
+        if (keyId) {
+            mongo.connect(GLOBAL.url, function (err, db) {
+                assert.equal(null, err);
+                var collection = db.collection('keys');
 
-            collection.replaceOne({key: keyId}, data, function (err, result) {
-                assert.equal(err, null);
-                console.log("Updated 1 documents into the collection");
-                db.close();
+                collection.replaceOne({key: keyId}, data, function (err, result) {
+                    assert.equal(err, null);
+                    console.log("Updated 1 documents into the collection");
+                    db.close();
 
-                callback(result);
+                    callback(result);
+                });
             });
-        });
+        }
+        else {
+            var retrun = {
+                result: {
+                    nModified: 0
+                }
+            }
+            callback(retrun);
+        }
     },
     deleteKey: function(keyId, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
