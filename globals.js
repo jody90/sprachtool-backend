@@ -9,6 +9,14 @@ switch (ARGS[0]) {
         var pathLive = '/cache/sprachtool/live';
         var mongoUrl = 'mongodb://mongodb:27017/myproject';
     break;
+    case "codeninja-dev" :
+        var sshPrivateKeyPath = '/data/ssh/id_rsa'
+        var host = '10.255.48.21';
+        var username = 'sortimo';
+        var pathTest = '/cache/sprachtool/test';
+        var pathLive = '/cache/sprachtool/live';
+        var mongoUrl = 'mongodb://mongodb:27018/myproject-dev';
+    break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
         var host = '165.227.163.32';

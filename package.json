@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:jody": "node index.js jody",
     "start:codeninja": "node index.js codeninja",
+    "start:codeninja-dev": "node index.js codeninja-dev",
     "start:local": "node index.js local"
   },
   "keywords": [],
