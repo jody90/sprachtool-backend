@@ -23,7 +23,7 @@ switch (ARGS[0]) {
         var username = 'root';
         var pathTest = '/var/www/html/test';
         var pathLive = '/var/www/html/live';
-        var mongoUrl = 'mongodb://172.22.2.159:27017/myproject';
+        var mongoUrl = 'mongodb://172.22.2.159:27018/myproject-dev';
     break;
     default:
 
