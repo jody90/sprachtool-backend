@@ -15,7 +15,7 @@ switch (ARGS[0]) {
         var username = 'sortimo';
         var pathTest = '/cache/sprachtool/test';
         var pathLive = '/cache/sprachtool/live';
-        var mongoUrl = 'mongodb://mongodb:27018/myproject-dev';
+        var mongoUrl = 'mongodb://mongodb-dev:27018/myproject-dev';
     break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
