@@ -77,7 +77,8 @@ const VersionService = {
                 var text = "";
 
                 for (let key in localizedKeys[lang]) {
-                    text += key + " = " + localizedKeys[lang][key] + "\n";
+                    let tTranslation = localizedKeys[lang][key].replace(/\n/g, "<br>");
+                    text += key + " = " + tTranslation + "\n";
                 }
 
                 fs.writeFileSync(file, text);
