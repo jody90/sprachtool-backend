@@ -1,16 +1,26 @@
 const GLOBAL = require(__base + "/globals");
 const mongo = require('mongodb').MongoClient;
-const assert = require('assert');
+const LogService = require(__base + "/logging/LogService");
+const logger = new LogService(GLOBAL.logName, __filename).createLogger();
 
 const KeyService = {
     getAllKeys: function(callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err, arguments.callee.name);
+                return false;
+            }
 
             var collection = db.collection('keys');
 
             collection.find({}, {_id: 0}).sort({_id: -1}).toArray(function (err, docs) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 callback(docs);
                 db.close();
             });
@@ -18,25 +28,40 @@ const KeyService = {
     },
     getKeyById: function(id, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
 
             var collection = db.collection('keys');
 
             collection.find({key: id}, {_id: 0}).toArray(function (err, docs) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 callback(docs);
                 db.close();
             });
         });
     },
     insertKey: function(data, callback) {
-        console.log(data);
-        console.log("insert: ", data.key);
+        
+        logger.info("insert: ", data);
+        
         var that = this;
 
         if (data.key != null) {
             mongo.connect(GLOBAL.url, function (err, db) {
-                assert.equal(null, err);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 var collection = db.collection('keys');
                 collection.update({key: data.key}, data, {upsert: true}, function (err, result) {
                     db.close();
@@ -56,11 +81,21 @@ const KeyService = {
     updateKey: function(keyId, data, callback) {
         if (keyId) {
             mongo.connect(GLOBAL.url, function (err, db) {
-                assert.equal(null, err);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 var collection = db.collection('keys');
 
                 collection.replaceOne({key: keyId}, data, function (err, result) {
-                    assert.equal(err, null);
+
+                    if (err) {
+                        logger.error(err);
+                        return false;
+                    }
+
                     console.log("Updated 1 documents into the collection");
                     db.close();
 
@@ -79,12 +114,22 @@ const KeyService = {
     },
     deleteKey: function(keyId, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
+
             var collection = db.collection('keys');
 
             collection.remove({key: keyId}, function (err, result) {
-                assert.equal(err, null);
-                console.log("Deleted 1 documents into the collection");
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
+                logger.info("Deleted 1 document in the collection");
                 db.close();
                 callback(result);
             });

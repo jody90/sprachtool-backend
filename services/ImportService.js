@@ -1,6 +1,5 @@
 const GLOBAL = require(__base + "/globals");
 const mongo = require('mongodb').MongoClient;
-const assert = require('assert');
 const keySerivce = require(__base + "/services/KeyService");
 const fs = require("fs");
 
@@ -69,17 +68,25 @@ const ImportService = {
         };
 
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
 
             var collection = db.collection('keys');
 
             console.log(query);
 
             // collection.update({}, {$pull: { "language": "de" }}, {multi: true}, function (err, result) {
-            // assert.equal(err, null);
 
             collection.update({key: key}, {$addToSet: query}, {upsert: true}, function (err, docs) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 if (filedata.length > 1) {
                     counter++;
                     filedata.splice(0, 1);

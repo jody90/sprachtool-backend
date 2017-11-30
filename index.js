@@ -13,6 +13,9 @@ const versionSerivce = require(__base + "/services/VersionService");
 
 const importService = require(__base + "/services/ImportService");
 
+const LogService = require(__base + "/logging/LogService");
+const logger = new LogService(GLOBAL.logName, __filename).createLogger();
+
 var filePath = "Temp/";
 
 // Create Temp folder if it doesnt exists
@@ -30,7 +33,12 @@ if (!fs.existsSync("Temp/live")){
 
 // Make key unique
 mongo.connect(GLOBAL.url, function (err, db) {
-    assert.equal(null, err);
+
+    if (err) {
+        logger.error(err);
+        return false;
+    }
+
     var collection = db.collection('keys');
     collection.ensureIndex({key: 1}, {unique: true});
 });
@@ -54,5 +62,5 @@ app.use("/api", routes);
 var port = process.env.port || 5000;
 
 app.listen(port, function (req, res) {
-    console.log("App runs at Port " + port);
+    logger.info("App runs on Port %d", port);
 })

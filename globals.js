@@ -8,6 +8,7 @@ switch (ARGS[0]) {
         var pathTest = '/cache/sprachtool/test';
         var pathLive = '/cache/sprachtool/live';
         var mongoUrl = 'mongodb://mongodb:27017/myproject';
+        var logName = 'prod-sprachtool-backend';        
     break;
     case "codeninja-dev" :
         var sshPrivateKeyPath = '/data/ssh/id_rsa'
@@ -16,6 +17,7 @@ switch (ARGS[0]) {
         var pathTest = '/cache/sprachtool/test';
         var pathLive = '/cache/sprachtool/live';
         var mongoUrl = 'mongodb://mongodb-dev/myproject-dev';
+        var logName = 'dev-sprachtool-backend';        
     break;
     case "local" :
         var sshPrivateKeyPath = 'C:/Users/jlerch/.ssh/private_key.ppk';
@@ -24,6 +26,7 @@ switch (ARGS[0]) {
         var pathTest = '/var/www/html/test';
         var pathLive = '/var/www/html/live';
         var mongoUrl = 'mongodb://172.22.2.159:27018/myproject-dev';
+        var logName = 'local-sprachtool-backend';
     break;
     default:
 
@@ -32,6 +35,7 @@ switch (ARGS[0]) {
 var Globals = {
     url: mongoUrl,
     sshPrivateKeyPath: sshPrivateKeyPath,
+    logName: logName,
     sshDestinations: {
         test: {
             host: host,

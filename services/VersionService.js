@@ -1,14 +1,18 @@
 const GLOBAL   = require(__base + "/globals");
 const mongo    = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const assert   = require('assert');
 const fs       = require("fs");
 const client   = require('scp2');
 
 const VersionService = {
     addVersion: function(data, keys, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
+
             var collection = db.collection('versions');
 
             var version = {
@@ -23,7 +27,12 @@ const VersionService = {
             }
 
             collection.insert(version, function (err, result) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 callback(result);
                 db.close();
             });
@@ -107,14 +116,23 @@ const VersionService = {
     },
     getVersionById: function(versionId, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+            
+            if (err) {
+                logger.error(err);
+                return false;
+            }
 
             var collection = db.collection('versions');
 
             var oId = new ObjectId(versionId);
 
             collection.find({_id: oId}).toArray(function (err, docs) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 callback(docs);
                 db.close();
             });
@@ -122,12 +140,21 @@ const VersionService = {
     },
     getAllVersions: function(callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
 
             var collection = db.collection('versions');
 
             collection.find({}, {keys: 0}).sort({_id: -1}).toArray(function (err, docs) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
+
                 callback(docs);
                 db.close();
             });
@@ -135,7 +162,11 @@ const VersionService = {
     },
     setCurrentEnvironment: function(versionId, environment, language, callback) {
         mongo.connect(GLOBAL.url, function (err, db) {
-            assert.equal(null, err);
+
+            if (err) {
+                logger.error(err);
+                return false;
+            }
 
             var collection = db.collection('versions');
 
@@ -148,10 +179,19 @@ const VersionService = {
             query["environment." + environment] = language;
 
             collection.update({}, {$pull: query}, {multi: true}, function (err, result) {
-                assert.equal(err, null);
+
+                if (err) {
+                    logger.error(err);
+                    return false;
+                }
 
                 collection.update({_id: oId}, {$addToSet: query}, function (err, docs) {
-                    assert.equal(err, null);
+
+                    if (err) {
+                        logger.error(err);
+                        return false;
+                    }
+                    
                     callback(docs.result);
                     db.close();
                 });
